@@ -68,7 +68,10 @@ function App() {
               value={maxTokens}
               min={1}
               max={2048}
-              onChange={(e) => setMaxTokens(Number(e.target.value))}
+              onChange={(e) => {
+                const n = Math.trunc(Number(e.target.value));
+                setMaxTokens(Number.isFinite(n) ? Math.max(1, Math.min(2048, n)) : 1);
+              }}
             />
           </label>
         </div>
