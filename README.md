@@ -12,14 +12,37 @@ GPT Chat Client leveraging Neural Network Service
    ```
 
 2. **Setup**:
-TBD
+   - **Install dependencies**:
+     ```bash
+     npm install
+     ```
+   - **Configure environment** by copying the example file and editing it:
+     ```bash
+     cp .env.example .env
+     ```
+     Update `.env` with your Neural Network service URL:
+     ```dotenv
+     VITE_PREDICTION_SERVER_URL=http://localhost:8000
+     ```
 
 3. **Neural Network Service**:
    - **Follow instructions** on [Quick Start Guide](https://github.com/derinworks/penr-oz-neural-network-v3-torch-ddp?tab=readme-ov-file#quickstart-guide)
    - **Deployed remotely** then use a `.env` file as such to configure url:
     ```dotenv
-    PREDICTION_SERVER_URL=http://???:8000
+    VITE_PREDICTION_SERVER_URL=http://???:8000
     ```
 
 4. **Run**:
-TBD
+   - **Start the development server**:
+     ```bash
+     npm run dev
+     ```
+     App running at http://localhost:3000
+   - **Build for production**:
+     ```bash
+     npm run build
+     ```
+   - **Preview the production build**:
+     ```bash
+     npm run preview
+     ```
