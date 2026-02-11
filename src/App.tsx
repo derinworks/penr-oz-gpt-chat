@@ -13,6 +13,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modelId, setModelId] = useState('gpt-example');
+  const [blockSize, setBlockSize] = useState(1024);
   const [maxTokens, setMaxTokens] = useState(50);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,7 @@ function App() {
       const generatedResponse = await generate({
         model_id: modelId,
         input: [tokenizedResponse.tokens],
-        block_size: 1024,
+        block_size: blockSize,
         max_new_tokens: maxTokens,
         temperature: 1.0,
       });
@@ -64,6 +65,19 @@ function App() {
               type="text"
               value={modelId}
               onChange={(e) => setModelId(e.target.value)}
+            />
+          </label>
+          <label>
+            Block size:
+            <input
+              type="number"
+              value={blockSize}
+              min={1}
+              max={2048}
+              onChange={(e) => {
+                const n = Math.trunc(Number(e.target.value));
+                setBlockSize(Number.isFinite(n) ? Math.max(1, Math.min(2048, n)) : 1)
+              }}
             />
           </label>
           <label>
