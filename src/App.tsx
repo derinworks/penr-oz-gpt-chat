@@ -12,8 +12,8 @@ function App() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [modelId, setModelId] = useState('model');
-  const [maxTokens, setMaxTokens] = useState(200);
+  const [modelId, setModelId] = useState('gpt-example');
+  const [maxTokens, setMaxTokens] = useState(50);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,15 +31,19 @@ function App() {
     setLoading(true);
 
     try {
-      const tokens = await tokenize(userMessage);
-      const generated = await generate({
+      const tokenizedResponse = await tokenize(userMessage);
+      const generatedResponse = await generate({
         model_id: modelId,
-        input: tokens,
-        block_size: tokens.length,
+        input: [tokenizedResponse.tokens],
+        block_size: 1024,
         max_new_tokens: maxTokens,
+        temperature: 1.0,
       });
-      const text = await decode(generated);
-      setMessages((prev) => [...prev, { role: 'assistant', content: text }]);
+      const onlyGeneratedTokens = generatedResponse.tokens.slice(tokenizedResponse.tokens.length);
+      const decodeResponse = await decode(onlyGeneratedTokens);
+      const decodedText = decodeResponse.text;
+      const textUntilFirstEndOfText = decodedText.slice(0, decodedText.indexOf('<|endoftext|>'));
+      setMessages((prev) => [...prev, { role: 'assistant', content: textUntilFirstEndOfText }]);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Request failed';
       setError(message);
