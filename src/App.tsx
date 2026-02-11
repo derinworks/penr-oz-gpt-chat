@@ -42,7 +42,8 @@ function App() {
       const onlyGeneratedTokens = generatedResponse.tokens.slice(tokenizedResponse.tokens.length);
       const decodeResponse = await decode(onlyGeneratedTokens);
       const decodedText = decodeResponse.text;
-      const textUntilFirstEndOfText = decodedText.slice(0, decodedText.indexOf('<|endoftext|>'));
+      const endOfTextIdx = decodedText.indexOf('<|endoftext|>')
+      const textUntilFirstEndOfText = endOfTextIdx < 0 ? decodedText : decodedText.slice(0, endOfTextIdx);
       setMessages((prev) => [...prev, { role: 'assistant', content: textUntilFirstEndOfText }]);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Request failed';
