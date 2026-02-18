@@ -85,6 +85,11 @@
   word-break: break-word;
 }
 
+.chat-message--pending {
+  border: 1px dashed #555;
+  opacity: 0.85;
+}
+
 .chat-loading {
   opacity: 0.6;
   animation: pulse 1.5s infinite;

@@ -1,11 +1,8 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { chat } from './api'
+import { MessageList, type Message } from './components/MessageList'
+import { ChatInput } from './components/ChatInput'
 import './App.css'
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
 
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -15,11 +12,6 @@ function App() {
   const [modelId, setModelId] = useState('gpt-example');
   const [blockSize, setBlockSize] = useState(1024);
   const [maxTokens, setMaxTokens] = useState(50);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,43 +82,14 @@ function App() {
         </div>
       </header>
 
-      <main className="chat-messages">
-        {messages.length === 0 && (
-          <div className="chat-empty">
-            Send a message to start generating text.
-          </div>
-        )}
-        {messages.map((msg, i) => (
-          <div key={i} className={`chat-message chat-message--${msg.role}`}>
-            <span className="chat-message-role">
-              {msg.role === 'user' ? 'You' : 'GPT'}
-            </span>
-            <p className="chat-message-content">{msg.content}</p>
-          </div>
-        ))}
-        {loading && (
-          <div className="chat-message chat-message--assistant">
-            <span className="chat-message-role">GPT</span>
-            <p className="chat-message-content chat-loading">Generating...</p>
-          </div>
-        )}
-        {error && <div className="chat-error">{error}</div>}
-        <div ref={messagesEndRef} />
-      </main>
+      <MessageList messages={messages} loading={loading} error={error} />
 
-      <form className="chat-input-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          className="chat-input"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type a message..."
-          disabled={loading}
-        />
-        <button type="submit" className="chat-send" disabled={loading || !input.trim()}>
-          Send
-        </button>
-      </form>
+      <ChatInput
+        value={input}
+        onChange={setInput}
+        onSubmit={handleSubmit}
+        disabled={loading}
+      />
     </div>
   );
 }
