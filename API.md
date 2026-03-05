@@ -56,9 +56,10 @@ Orchestrated endpoint. Tokenizes the message, runs generation, decodes the resul
 
 **Error Responses**
 
-| HTTP Status | Condition                                               |
-|-------------|---------------------------------------------------------|
-| `400`       | Missing required fields (`message` or `model_id`)      |
+| HTTP Status | Condition                                                                                                                |
+|-------------|--------------------------------------------------------------------------------------------------------------------------|
+| `400`       | Missing required fields (`message` or `model_id`)                                                                       |
+| `4xx`/`5xx` | An error occurred during an orchestration step (e.g., tokenization). See the general Layer 1 error responses section.   |
 
 ---
 
@@ -172,7 +173,7 @@ Proxy pass-through to the neural network service's `/decode/` endpoint.
 
 ### Error Responses (Layer 1)
 
-All Layer 1 endpoints return errors in the following shape:
+The proxy generates errors in the following shape for `/api/chat`. Pass-through endpoints (`/api/tokenize`, `/api/generate`, `/api/decode`) relay the upstream response body unchanged.
 
 ```json
 {
@@ -186,7 +187,7 @@ All Layer 1 endpoints return errors in the following shape:
 | `504`       | Request to the neural network service timed out (>30 s) |
 | `500`       | Unexpected internal server error                        |
 
-Upstream errors from the neural network service are forwarded with their original HTTP status code and an `error` field set to a stage description (e.g. `"Tokenization failed"`).
+For pass-through endpoints, upstream errors from the neural network service are forwarded as-is. For the `/api/chat` endpoint, the original HTTP status is forwarded, but the error field is set to a generic stage description (e.g. `"Tokenization failed"`).
 
 ---
 
