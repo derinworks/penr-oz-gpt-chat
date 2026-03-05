@@ -54,9 +54,15 @@ Orchestrated endpoint. Tokenizes the message, runs generation, decodes the resul
 |------------|----------|------------------------------------|
 | `response` | `string` | The model's generated text reply   |
 
+**Error Responses**
+
+| HTTP Status | Condition                                               |
+|-------------|---------------------------------------------------------|
+| `400`       | Missing required fields (`message` or `model_id`)      |
+
 ---
 
-### POST /api/tokenize/
+### POST /api/tokenize
 
 Proxy pass-through to the neural network service's `/tokenize/` endpoint.
 
@@ -90,7 +96,7 @@ Proxy pass-through to the neural network service's `/tokenize/` endpoint.
 
 ---
 
-### POST /api/generate/
+### POST /api/generate
 
 Proxy pass-through to the neural network service's `/generate/` endpoint.
 
@@ -130,7 +136,7 @@ Proxy pass-through to the neural network service's `/generate/` endpoint.
 
 ---
 
-### POST /api/decode/
+### POST /api/decode
 
 Proxy pass-through to the neural network service's `/decode/` endpoint.
 
@@ -176,7 +182,6 @@ All Layer 1 endpoints return errors in the following shape:
 
 | HTTP Status | Condition                                               |
 |-------------|---------------------------------------------------------|
-| `400`       | Missing required fields (`message` or `model_id`)      |
 | `502`       | Could not reach the neural network service              |
 | `504`       | Request to the neural network service timed out (>30 s) |
 | `500`       | Unexpected internal server error                        |
@@ -247,7 +252,7 @@ Runs autoregressive token generation using the specified model.
 | Field            | Type         | Required | Description                                        |
 |------------------|--------------|----------|----------------------------------------------------|
 | `model_id`       | `string`     | Yes      | Identifier of the model to use                     |
-| `input`          | `number[][]` | Yes      | Batch of token ID sequences                        |
+| `input`          | `number[][]` | Yes      | Batch of token ID sequences (outer array = batch)  |
 | `block_size`     | `number`     | Yes      | Context window size                                |
 | `max_new_tokens` | `number`     | Yes      | Maximum number of new tokens to generate           |
 | `temperature`    | `number`     | Yes      | Sampling temperature                               |
