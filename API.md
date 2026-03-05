@@ -118,8 +118,8 @@ Proxy pass-through to the neural network service's `/generate/` endpoint.
 |------------------|--------------|----------|-----------------------------------------------------|
 | `model_id`       | `string`     | Yes      | Identifier of the model to use                      |
 | `input`          | `number[][]` | Yes      | Batch of token ID sequences (outer array = batch)   |
-| `block_size`     | `number`     | Yes      | Context window size                                 |
-| `max_new_tokens` | `number`     | Yes      | Maximum number of new tokens to generate            |
+| `block_size`     | `number`     | Yes      | Context window size (1–2048)                        |
+| `max_new_tokens` | `number`     | Yes      | Maximum number of new tokens to generate (1–2048)   |
 | `temperature`    | `number`     | Yes      | Sampling temperature                                |
 | `top_k`          | `number`     | No       | Top-k sampling cutoff; omit to disable              |
 
@@ -254,8 +254,8 @@ Runs autoregressive token generation using the specified model.
 |------------------|--------------|----------|----------------------------------------------------|
 | `model_id`       | `string`     | Yes      | Identifier of the model to use                     |
 | `input`          | `number[][]` | Yes      | Batch of token ID sequences (outer array = batch)  |
-| `block_size`     | `number`     | Yes      | Context window size                                |
-| `max_new_tokens` | `number`     | Yes      | Maximum number of new tokens to generate           |
+| `block_size`     | `number`     | Yes      | Context window size (1–2048)                       |
+| `max_new_tokens` | `number`     | Yes      | Maximum number of new tokens to generate (1–2048)  |
 | `temperature`    | `number`     | Yes      | Sampling temperature                               |
 | `top_k`          | `number`     | No       | Top-k sampling cutoff; omit to disable             |
 
