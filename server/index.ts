@@ -147,12 +147,15 @@ app.post('/api/chat', async (req: Request, res: Response) => {
     let lineBuffer = '';
     let stopped = false;
     const tokenBuffer: number[] = [];
+    const cumulativeTokens: number[] = [];
     const TOKEN_FLUSH_INTERVAL_MS = 500;
 
     const flushTokenBuffer = async (): Promise<boolean> => {
       const batch = tokenBuffer.splice(0);
       if (batch.length === 0) return false;
-      const decodeRes = await forwardPost('/decode/', { encoding: 'gpt2', tokens: batch }, clientAbort.signal);
+      cumulativeTokens.push(...batch);
+
+      const decodeRes = await forwardPost('/decode/', { encoding: 'gpt2', tokens: cumulativeTokens }, clientAbort.signal);
       if (!decodeRes.ok) {
         sendError('Failed to decode token batch');
         return true;
