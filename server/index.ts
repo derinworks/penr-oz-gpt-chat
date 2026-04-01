@@ -168,7 +168,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
       const text = decoded.text;
       const endIdx = text.indexOf('<|endoftext|>');
       const piece = endIdx < 0 ? text : text.slice(0, endIdx);
-      if (piece) sendEvent({ token: piece });
+      if (piece) sendEvent({ text: piece });
       return endIdx >= 0;
     };
 
