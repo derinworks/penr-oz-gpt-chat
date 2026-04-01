@@ -200,9 +200,13 @@ app.post('/api/chat', async (req: Request, res: Response) => {
     try {
       while (!stopped) {
         const { value, done } = await reader.read();
-        if (done) break;
 
-        lineBuffer += textDecoder.decode(value, { stream: true });
+        if (value) {
+          lineBuffer += textDecoder.decode(value, { stream: !done });
+        } else if (done) {
+          lineBuffer += textDecoder.decode();
+        }
+
         const lines = lineBuffer.split('\n');
         lineBuffer = lines.pop() ?? '';
 
@@ -215,6 +219,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
 
           tokenBuffer.push(tokenId);
         }
+        if (done) break;
       }
     } finally {
       clearInterval(flushTimer);

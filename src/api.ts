@@ -99,9 +99,13 @@ export async function chatStream(
     let eventType = '';
     while (true) {
       const { done, value } = await reader.read();
-      if (done) break;
+      
+      if (value) {
+        buffer += decoder.decode(value, { stream: !done });
+      } else if (done) {
+        buffer += decoder.decode(); // flush any remaining bytes
+      }
 
-      buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
       buffer = lines.pop() ?? '';
 
@@ -126,6 +130,7 @@ export async function chatStream(
           if (e instanceof SyntaxError) continue;
           throw e;
         }
+        if (done) break;
       }
     }
   } finally {
