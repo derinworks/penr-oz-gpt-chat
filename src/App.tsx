@@ -39,11 +39,11 @@ function App() {
         {
           message: userMessage,
           model_id: modelId,
-          encoding: encoding,
+          encoding: encoding.trim() || 'gpt2',
           block_size: blockSize,
           max_new_tokens: maxTokens,
           temperature,
-          eot_token: eotToken,
+          eot_token: eotToken.trim() || '<|endoftext|>',
         },
         (fullText) => {
           setMessages((prev) => {
