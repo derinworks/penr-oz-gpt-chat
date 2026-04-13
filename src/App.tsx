@@ -108,10 +108,9 @@ function App() {
               type="number"
               value={blockSize}
               min={1}
-              max={2048}
               onChange={(e) => {
                 const n = Math.trunc(Number(e.target.value));
-                setBlockSize(Number.isFinite(n) ? Math.max(1, Math.min(2048, n)) : 1)
+                setBlockSize(Number.isFinite(n) ? Math.max(1, n) : 1)
               }}
             />
           </label>
