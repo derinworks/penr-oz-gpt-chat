@@ -75,7 +75,13 @@ build, `npm test`. Coverage is not enforced in CI.
   `PREDICTION_SERVER_URL` / `PORT` are read by the Express proxy via dotenv. In dev the
   client calls `/api/*` through the Vite proxy; production builds target
   `VITE_PROXY_SERVER_URL` directly (`src/api.ts`).
-- Upstream timeout is 30s → 504; unreachable service → 502. Once SSE headers are
-  flushed, errors arrive as `event: error` events, not HTTP status codes.
+- The 30s `TIMEOUT_MS` in `forwardPost` bounds **only the wait for upstream response
+  headers**: `clearTimeout` runs as soon as `fetch` resolves, so reading the JSON body
+  or a generation stream afterwards is unbounded and a stalled stream hangs
+  indefinitely. On the pass-through routes a fired timeout surfaces as 504 and an
+  unreachable service as 502 (`handleProxyError`). `/api/chat` has neither: it flushes
+  SSE headers up front, and its catch treats *every* `AbortError` — client disconnect
+  and upstream timeout alike — as a disconnect, so the stream just ends with no
+  `event: error` and no `[DONE]`. Non-abort mid-stream failures do send `event: error`.
 - `server/index.ts` starts listening only when it is the main entry point, so tests can
   import `app` without binding a port.
