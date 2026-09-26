@@ -248,6 +248,22 @@ describe('/api/chat – request validation', () => {
     expect(res.status).toBe(400)
     expect(res.body.error).toMatch(/required/i)
   })
+
+  it('returns 400 instead of crashing when the request body is empty (req.body is undefined)', async () => {
+    // No .send(...) at all: no body and no Content-Type, so express.json()
+    // never runs and req.body is undefined. Destructuring it directly used
+    // to throw before the message/model_id check ran, producing a generic
+    // 500 instead of this validation error.
+    const res = await request(app).post('/api/chat')
+    expect(res.status).toBe(400)
+    expect(res.body.error).toMatch(/required/i)
+  })
+
+  it('returns 400 instead of crashing for an empty body with a JSON Content-Type', async () => {
+    const res = await request(app).post('/api/chat').set('Content-Type', 'application/json').send('')
+    expect(res.status).toBe(400)
+    expect(res.body.error).toMatch(/required/i)
+  })
 })
 
 // ---------------------------------------------------------------------------

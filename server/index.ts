@@ -97,8 +97,12 @@ interface ChatRequest {
 }
 
 app.post('/api/chat', async (req: Request, res: Response) => {
+  // req.body is undefined for an empty body (with or without a JSON
+  // Content-Type), so destructuring it directly would throw before the
+  // message/model_id validation below ever runs. Fall back to {} so a
+  // missing body degrades to the intended 400 instead of a generic 500.
   const { message, model_id, encoding, block_size, max_new_tokens, temperature, top_k, top_p, eot_token, device } =
-    req.body as ChatRequest;
+    (req.body ?? {}) as Partial<ChatRequest>;
 
   if (!message || !model_id) {
     res.status(400).json({ error: 'message and model_id are required' });
